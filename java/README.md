@@ -1,1 +1,2 @@
-** How to set up command line Java environment
+# class-cs112
+ Lab sessions for cs112

@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<!-- saved from url=(0051)http://cs112.cs.yale.edu/19sp/psets/pset06/tsp.html -->
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" ng-app="courseApp" ng-controller="courseController" class="ng-scope"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><style type="text/css">@charset "UTF-8";[ng\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide{display:none !important;}ng\:form{display:block;}.ng-animate-block-transitions{transition:0s all!important;-webkit-transition:0s all!important;}.ng-hide-add-active,.ng-hide-remove{display:block!important;}</style>
+    <link href="./CS 112 Pset 6_ Traveling Salesman Problem_files/stylesheet.css" rel="stylesheet" type="text/css">
+    <link href="./CS 112 Pset 6_ Traveling Salesman Problem_files/bootstrap.css" rel="stylesheet">
+    <link href="./CS 112 Pset 6_ Traveling Salesman Problem_files/styles.css" type="text/css" rel="stylesheet" media="screen">
+    <script src="./CS 112 Pset 6_ Traveling Salesman Problem_files/jquery-1.9.1.min.js.download"></script>
+    <script src="./CS 112 Pset 6_ Traveling Salesman Problem_files/jquery-ui.min.js.download"></script>
+    <script type="text/javascript" src="./CS 112 Pset 6_ Traveling Salesman Problem_files/angular.js.download"></script>
+    <script type="text/javascript" src="./CS 112 Pset 6_ Traveling Salesman Problem_files/ui-bootstrap-tpls-0.11.0.js.download"></script>
+    <script src="./CS 112 Pset 6_ Traveling Salesman Problem_files/functions.js.download"></script>
+
+    
+
+    <title>CS 112 Pset 6: Traveling Salesman Problem</title>
+  </head>
+
+  <body cis-header=""><header><!-- ngInclude: '/~cs112/19sp/header.html' --><div ng-include="&#39;/~cs112/19sp/header.html&#39;" class="ng-scope"><!-- Nav Bar -->
+<nav class="navbar navbar-default navbar-fixed-top ng-scope" role="navigation">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#header-collapse">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" ng-href="http://cs112.cs.yale.edu" style="text-decoration: none" href="http://cs112.cs.yale.edu/"><em>&nbsp;HOME</em></a>&nbsp;&nbsp;&nbsp;
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="header-collapse">
+      <ul class="nav navbar-nav">
+        <!-- Collapse some items for medium - small screen sizes -->
+        <li class="dropdown visible-md visible-sm">
+          <a ng-href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" href="http://cs112.cs.yale.edu/19sp/psets/pset06/tsp.html#">COURSE INFO<span class="caret"></span></a>
+          <ul class="dropdown-menu" role="menu">
+            <li><a ng-href="http://cs112.cs.yale.edu/19sp/syllabus.html" href="http://cs112.cs.yale.edu/19sp/syllabus.html">SYLLABUS</a></li>
+            <li><a ng-href="http://cs112.cs.yale.edu/19sp/schedule.html" href="http://cs112.cs.yale.edu/19sp/schedule.html">SCHEDULE</a></li>
+            <li><a ng-href="https://yale.hosted.panopto.com/Panopto/Pages/Sessions/List.aspx?folderID=9830f1da-e694-41f7-9db7-a9d6010cf036" target="_blank" href="https://yale.hosted.panopto.com/Panopto/Pages/Sessions/List.aspx?folderID=9830f1da-e694-41f7-9db7-a9d6010cf036">RECORDINGS</a></li>
+            <li><a ng-href="http://cs112.cs.yale.edu/19sp/staff.html" href="http://cs112.cs.yale.edu/19sp/staff.html">STAFF</a></li>
+            <li><a ng-href="http://cs112.cs.yale.edu/19sp/policies.html" href="http://cs112.cs.yale.edu/19sp/policies.html">POLICIES</a></li>
+            <li><a ng-href="http://cs112.cs.yale.edu/19sp/exams.html" href="http://cs112.cs.yale.edu/19sp/exams.html">EXAMS</a></li>
+          </ul>
+        </li>
+        <li class="hidden-md hidden-sm">
+          <a ng-href="http://cs112.cs.yale.edu/19sp/syllabus.html" href="http://cs112.cs.yale.edu/19sp/syllabus.html">SYLLABUS</a>
+        </li>
+        <li class="hidden-md hidden-sm">
+          <a ng-href="http://cs112.cs.yale.edu/19sp/schedule.html" href="http://cs112.cs.yale.edu/19sp/schedule.html">SCHEDULE</a>
+        </li>
+        <li class="hidden-md hidden-sm">
+          <a ng-href="https://yale.hosted.panopto.com/Panopto/Pages/Sessions/List.aspx?folderID=9830f1da-e694-41f7-9db7-a9d6010cf036" target="_blank" href="https://yale.hosted.panopto.com/Panopto/Pages/Sessions/List.aspx?folderID=9830f1da-e694-41f7-9db7-a9d6010cf036">RECORDINGS</a>
+        </li>
+        <li class="hidden-md hidden-sm">
+          <a ng-href="http://cs112.cs.yale.edu/19sp/staff.html" href="http://cs112.cs.yale.edu/19sp/staff.html">STAFF</a>
+        </li>
+        <li class="hidden-md hidden-sm">
+          <a ng-href="http://cs112.cs.yale.edu/19sp/policies.html" href="http://cs112.cs.yale.edu/19sp/policies.html">POLICIES</a>
+        </li>
+        <li class="hidden-md hidden-sm">
+          <a ng-href="http://cs112.cs.yale.edu/19sp/exams.html" href="http://cs112.cs.yale.edu/19sp/exams.html">EXAMS</a>
+        </li>
+        <li class="dropdown">
+          <a ng-href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" href="http://cs112.cs.yale.edu/19sp/psets/pset06/tsp.html#">PSETS<span class="caret"></span></a>
+          <ul class="dropdown-menu" role="menu">
+            <li><a ng-href="http://cs112.cs.yale.edu/19sp/psets/pset00/hello.html" href="http://cs112.cs.yale.edu/19sp/psets/pset00/hello.html"><span>Pset 00: Hello,
+                  World<br>Due: Wed. Jan 30, 11:59 PM</span></a></li>            
+            <li><a ng-href="http://cs112.cs.yale.edu/19sp/psets/pset01/great_race.html" href="http://cs112.cs.yale.edu/19sp/psets/pset01/great_race.html"><span>Pset
+                  01: The Great Race<br>Due: Wed. Feb 6, 11:59 PM</span></a></li>
+            <li><a ng-href="http://cs112.cs.yale.edu/19sp/psets/pset02/nbody.html" href="http://cs112.cs.yale.edu/19sp/psets/pset02/nbody.html"><span>Pset
+                  02: N-Body<br>Due: Wed. Feb 13, 11:59 PM</span></a></li>
+            <li><a ng-href="http://cs112.cs.yale.edu/19sp/psets/pset03/caesar.html" href="http://cs112.cs.yale.edu/19sp/psets/pset03/caesar.html"><span>Pset
+                  03: Hail Caesar<br>Wed: Feb. Feb 27, 11:59 PM</span></a></li>
+            <li><a ng-href="http://cs112.cs.yale.edu/19sp/psets/pset04/sierpinski.html" href="http://cs112.cs.yale.edu/19sp/psets/pset04/sierpinski.html"><span>Pset
+                  04: Recursive Graphics<br>Due: Wed. Mar 6, 11:59 PM</span></a></li>
+            <li><a ng-href="http://cs112.cs.yale.edu/19sp/psets/pset05/harpersbazaar.html" href="http://cs112.cs.yale.edu/19sp/psets/pset05/harpersbazaar.html"><span>Pset
+                  05: Harper's Bazaar<br>Due: Wed. Apr 3, 11:59 PM</span></a></li>
+            <li><a ng-href="http://cs112.cs.yale.edu/19sp/psets/pset06/tsp.html" href="http://cs112.cs.yale.edu/19sp/psets/pset06/tsp.html"><span>Pset
+                  06: TSP<br>Due: Wed. Apr 10, 11:59
+                  PM</span></a></li>
+            <li><a ng-href="http://cs112.cs.yale.edu/19sp/psets/pset07/project.html" href="http://cs112.cs.yale.edu/19sp/psets/pset07/project.html"><span>Final
+                  Project<br>Part 1 Due: Wed. Apr 18, 11:59 PM<br>
+                  Part 2 Due: Wed. May 1, 11:59 PM<br></span></a></li>
+          </ul>
+        </li> <!-- Homeworks Dropdown -->
+	      <li class="dropdown">
+          <a ng-href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" href="http://cs112.cs.yale.edu/19sp/psets/pset06/tsp.html#">RESOURCES<span class="caret"></span></a>
+          <ul class="dropdown-menu" role="menu">
+            <li><a ng-href="http://introcs.cs.princeton.edu/java/home/" href="http://introcs.cs.princeton.edu/java/home/"><span>BOOKSITE</span></a></li>
+	          <li><a ng-href="https://fling.seas.upenn.edu/~cis110/wiki/index.php?n=PennDraw.Reference" target="_blank" href="https://fling.seas.upenn.edu/~cis110/wiki/index.php?n=PennDraw.Reference"><span>PENNDRAW WIKI</span></a></li>
+	          <li><a ng-href="http://cs112.cs.yale.edu/19sp/style.html" href="http://cs112.cs.yale.edu/19sp/style.html">STYLE GUIDE</a></li>
+	          <li><a ng-href="http://mindprod.com/jgloss/compileerrormessages.html" target="_blank" href="http://mindprod.com/jgloss/compileerrormessages.html">Compiler Error Messages</a></li>
+            <li><a ng-href="http://mindprod.com/jgloss/runerrormessages.html" target="_blank" href="http://mindprod.com/jgloss/runerrormessages.html">Runtime Error Messages</a></li>
+          </ul>
+        </li> <!-- Resources Dropdown -->
+
+		    
+		    <!-- Collapse submission links for medium-small screen -->
+        <li class="dropdown nav-submit visible-md visible-sm">
+          <a href="https://cs112.cs.yale.edu/19sp/admin/dashboard.html" target="_blank">DASHBOARD</a>
+        </li>
+        <li class="dropdown nav-submit visible-md visible-sm">
+          <a href="https://cs112.cs.yale.edu/19sp/admin/ohsignup.html" target="_blank">LAB/HELP LOG</a>
+        </li>
+        <!-- End submission link collapse -->
+
+        <li class="nav-submit hidden-md hidden-sm">
+          <a href="https://cs112.cs.yale.edu/19sp/admin/dashboard.html" target="_blank">DASHBOARD</a>
+        </li>
+        <li class="nav-submit hidden-md hidden-sm">
+          <a href="https://cs112.cs.yale.edu/19sp/admin/ohsignup.html" target="_blank">LAB/HELP LOG</a>
+        </li>
+      </ul>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+<!-- End Nav Bar -->
+</div></header><div id="outer-content"><span id="inner-content" ng-transclude="">
+    <h1 class="ng-scope">Pset 6: Traveling Salesman Problem</h1>
+	<div class="ng-scope ng-isolate-scope">
+  <ul class="nav nav-tabs" ng-class="{&#39;nav-stacked&#39;: vertical, &#39;nav-justified&#39;: justified}" ng-transclude="">
+		<li ng-class="{active: active, disabled: disabled}" heading="0. Getting started" class="ng-isolate-scope active">
+  <a ng-click="select()" tab-heading-transclude="" class="ng-binding">0. Getting started</a>
+</li>
+    
+		<li ng-class="{active: active, disabled: disabled}" class="ng-isolate-scope">
+  <a ng-click="select()" tab-heading-transclude="" class="ng-binding"><tab-heading class="ng-scope">1. <code style="text-transform: none">Tour</code> class</tab-heading></a>
+</li>
+
+		<li ng-class="{active: active, disabled: disabled}" class="ng-isolate-scope">
+  <a ng-click="select()" tab-heading-transclude="" class="ng-binding"><tab-heading class="ng-scope">2. <code style="text-transform: none">Tour</code>
+			  insertion heuristics</tab-heading></a>
+</li>
+		
+		<li ng-class="{active: active, disabled: disabled}" heading="3. Extra credit" class="ng-isolate-scope">
+  <a ng-click="select()" tab-heading-transclude="" class="ng-binding">3. Extra credit</a>
+</li>
+		
+		<li ng-class="{active: active, disabled: disabled}" heading="4. Submission" class="ng-isolate-scope">
+  <a ng-click="select()" tab-heading-transclude="" class="ng-binding">4. Submission</a>
+</li>
+		
+		
+	</ul>
+  <div class="tab-content">
+    <!-- ngRepeat: tab in tabs --><div class="tab-pane ng-scope active" ng-repeat="tab in tabs" ng-class="{active: tab.active}" tab-content-transclude="tab">
+    
+			<h3 class="ng-scope">A. Goals</h3>
+			<p class="ng-scope">The purpose of the Travelling Salesman Problem assignment
+			  is to practice implementing linked lists. The specific goals
+			  are to:</p>
+			<ul class="ng-scope">
+				<li>Implement and use a linked list, a type of recursive data
+				  structure</li>
+				<li>Learn about the Travelling Salesman Problem, an
+				  important theoretical problem in computer science</li>
+			</ul>
+			<h3 class="ng-scope">B. Background</h3>
+			<p class="ng-scope">A travelling salesman needs to visit each of <var>n</var>
+			  cities exactly once, and arrive back home, keeping the total
+			  distance travelled as short as possible. In this assignment,
+			  you will write a program to find a path connecting <var>n</var>
+			  points that passes through each point exactly once.</p>
+			<p class="ng-scope">The travelling salesman problem is a notoriously
+			  difficult <em>combinatorial optimization</em> problem. There
+			  does not exist an efficient algorithm to find
+			  the <em>optimal</em> tour, the tour of smallest distance. The
+			  only way to find the <em>optimal</em> tour is to use brute
+			  force: to compute the distance of all possible tours. The
+        problem with this is that there are <var>n</var>! (<var>n</var> factorial)
+			  possible tours; enumerating them all and computing their
+			  distance would be very slow.</p>
+			<p class="ng-scope">However, there are efficient ways to find a tour that
+			  is <em>near</em>-optimal; these methods are
+			  called <em>heuristics</em>. You will implement two heuristics
+			  to find good (but not optimal) solutions to the traveling
+			  salesman problem.</p>
+
+		  <table border="0" cellpadding="2" cellspacing="0" class="ng-scope">
+		    <tbody><tr>
+		      <td><img width="300" src="./CS 112 Pset 6_ Traveling Salesman Problem_files/tsp1000.png" alt="1000 points in the plane"></td>
+		      <td><img width="300" src="./CS 112 Pset 6_ Traveling Salesman Problem_files/tsp1000-optimal.png" alt="optimal tour"></td>
+		    </tr>
+		    <tr>
+		      <td align="center"><strong>1,000 points</strong></td>
+		      <td align="center"><strong>optimal tour through the same 1,000 points</strong></td>
+		    </tr>
+		  </tbody></table>
+
+		  <p class="ng-scope">The travelling salesman problem has a wealth of
+		    applications such as vehicle routing, circuit board drilling,
+		    circuit board design, robot control, X-ray crystallography,
+		    machine scheduling, and computational biology.</p>
+
+		  <h3 class="ng-scope">C. Your program</h3>
+		  <p class="ng-scope">In this assignment, you will write a <code>Tour</code> class that models a tour by a linked list
+		    of <code>Point</code>s.</p>
+		  <p class="ng-scope">You will implement the following methods
+		    to insert points into a tour.</p>
+		  <ul class="ng-scope">
+		    <li><em>In-order insertion</em> Insert each point at the end
+		      of the current tour. This is the easiest to implement.</li>
+		    <li><em>Nearest-neighbor heuristic</em> Insert each point into
+		      the tour after the closest point that is already in the
+		      tour.</li>
+		    <li><em>Smallest-increase heuristic</em> Insert each point
+		      into the tour where it would cause the smallest increase in
+		      the tour distance.</li>
+		  </ul>
+		  <h3 class="ng-scope">D. Designing the Requirement and Interface</h3>
+		  <ul class="ng-scope">
+			  <li>Download <code><a href="http://cs112.cs.yale.edu/19sp/psets/pset06/data.zip">data.zip</a></code> and
+			    decompress it into your folder for this homework
+			    assignment. This zip file contains data files you can use
+			    for testing as well as some helper classes and interfaces
+			    you will need:
+          <ul>
+			      <!--<li><code>TourInterface.java</code> outlines the set of methods that your
+			          <code>Tour</code> class will have to
+			          implement.</li>-->
+			      <li><code>Point.java</code> represents points in your
+			        tour, and is described in detail in the next tab.  Each
+			        node in your linked list should contain a
+			        private <tt>Point</tt> variable.</li>
+			      <!--<li><code>Node.java</code> represents nodes in your
+			          <code>Tour</code>'s linked list and is also described
+			          in the next tab.</li>-->
+			      <li><code>VisualizeTour.java</code> is a program that help
+			        you graphically test your <code>Tour</code> class as you
+			        write it.  It takes a single command-line
+			        argument—the name of the data file to use;
+			        directions for using it are displayed in the window when
+			        you run it.</li>
+        </ul></li>
+        <li>Review the class material on linked lists.</li>
+		  </ul>
+		  <br class="ng-scope"><br class="ng-scope"><br class="ng-scope"><br class="ng-scope"><br class="ng-scope">
+		  <p class="ng-scope"><small><i>This assignment was originally developed by Bob
+		        Sedgewick and Kevin Wayne. It was adapted by Benedict
+		        Brown.</i>
+		    </small>
+		  </p>
+		</div><!-- end ngRepeat: tab in tabs --><div class="tab-pane ng-scope" ng-repeat="tab in tabs" ng-class="{active: tab.active}" tab-content-transclude="tab">
+    
+			
+			<p class="ng-scope">In this section, you will write <code>Tour</code> calls.</p>
+			<h3 class="ng-scope">A. The <code>Point</code> class</h3>
+		  <p class="ng-scope"><code><a href="http://cs112.cs.yale.edu/19sp/psets/pset06/data.zip">data.zip</a></code> contains
+        the <code>Point</code> class that represents a point in a
+        tour.  Open it in DrJava and study it carefully.  The API is
+        as follows:</p>
+		<pre class="ng-scope">public class <b>Point</b>
+------------------------------------------------------------------------------------------------------
+       <b>Point(double x, double y)</b>    // create the Point (x, y)
+String <b>toString()</b>                   // return String representation
+  void <b>draw()</b>                       // draw Point using PennDraw
+  void <b>drawTo(Point that)</b>           // draw line segment between this Point and that
+double <b>distanceTo(Point that)</b>       // return Euclidean distance between this Point and that</pre>
+			
+                <h3 class="ng-scope">B. The <code>Tour</code> class</h3>
+			<p class="ng-scope">Create a skeleton for your <code>Tour</code> class, which
+			  must implement every method below:</p>
+		  <pre class="ng-scope">public class <b>Tour</b>
+-----------------------------------------------------------------------------------------------------------
+String <b>toString()</b>                 // create a String representation of the Tour
+  void <b>draw(Point p)</b>              // draw the Tour using PennDraw
+                                  // any edge starting or ending at p should be in a distinct color
+   int <b>size()</b>                     // number of Points in this Tour
+double <b>distance()</b>                 // return the total distance of the Tour
+  void <b>insertInOrder(Point p)</b>     // insert p at the end of the Tour
+  void <b>insertNearest(Point p)</b>     // insert p using the nearest neighbor heuristic
+  void <b>shortestDetour(Point p)</b>    // insert p using the smallest increase heuristic</pre>
+		
+      <p class="ng-scope">Write method stubs for each method declaration listed above.
+			  The stubs must each return a dummy value if necessary so
+			  that <code>Tour.java</code> compiles.  This ensures you can
+			  submit your pset frequently and see test results for the parts
+			  you have completed.  If you are missing any of the methods
+			  above, our tester will not compile and you will not get any
+			  useful feedback.</p>
+			<p class="ng-scope">Add appropriate header comments and method
+			  comments.  <em>Submit!</em>  At this point, your submission
+			  should compile without errors and with no checkstyle warnings,
+			  but all the tests will fail.</p>
+			
+			<h3 class="ng-scope">C. The <code>Node</code> class</h3>
+			<p class="ng-scope">Create a file <code>Node.java</code> to represent linked list
+			  nodes.  You are free to implement this in any reasonable
+			  fashion, but we suggest using the <tt>LinkedListNode.java</tt>
+			  example from class (posted on the Syllabus page) as a model.
+			  We suggest including at least the following two
+			  constructors, although you will certainly need to add
+			  additional public methods (and likely private ones too):</p>
+			<pre class="ng-scope">public class <b>Node</b>
+------------------------------------------------------------------------------------------------------
+    <b>Node(Point p)</b>                // create a Node containing Point p
+    <b>Node(Node n, Point p)</b>        // create a Node containing Point p and with n as its next Node in the list
+</pre>
+
+      <p class="ng-scope">Include a <code>main</code> function in your <tt>Node</tt>
+        class that does a reasonable job of testing all the methods
+        and constructors you create.</p>
+
+      
+			<p class="ng-scope">
+        Declare the following private fields in your <code>Tour</code> class:
+
+			  </p><ul class="ng-scope">
+				  <li>A <code>Node</code> reference named <code>head</code>.
+				    This will represent the first <code>Node</code> in your
+				    <code>Tour</code>.</li>
+				  <li>A <code>Node</code> reference named <code>lastNode</code>. 
+				    This will represent the last <code>Node</code> in your 
+				    <code>Tour</code>. Whenever you append a <code>Node</code> to 
+				    the end of your linked list, it will be placed just before 
+				    this <code>Node</code>.</li>
+			  </ul>
+			<p class="ng-scope"></p>
+
+			<p class="ng-scope">
+				When your <code>Tour</code> class's 
+				linked list is not empty,  both <code>head</code> and 
+				<code>lastNode</code> must be different <code>Node</code> 
+				instances yet each contain a reference to the 
+				<b>same</b> <code>Point</code> object. Note that this is
+				different from having each <code>Node</code> refer to
+				distinct <code>Point</code> objects with the same field
+				values. The purpose of this is to represent the cyclical
+				nature of the salesman's route; he starts and ends at his
+				home. <b>This is a required implementation detail.</b>
+			</p>
+
+      <p class="ng-scope">
+        You may not use Java's built-in <code>LinkedList</code> class
+			 	to implement your linked list. You should also <b>not</b>
+			 	write your own class called <code>LinkedList</code> since
+			 	your <code>Tour</code> class will handle all linked list
+			 	functionality.
+			</p>
+			
+			<h3 class="ng-scope">D. Constructor and <code>toString()</code></h3>
+     		<p class="ng-scope">Implement a single constructor for your <code>Tour</code>
+				  class that takes no arguments and creates an
+				  empty <code>Tour</code>. This means that
+				  both <code>head</code> and <code>lastNode</code> will be
+				  null.
+			  </p>
+
+			<p class="ng-scope"><em><code>toString()</code></em> returns
+			  a <code>String</code> representation of the <code>Tour</code>
+			  (the first <code>Point</code> should show up at the end as
+			  well, just like it does in your linked list structure).
+			  Call <code>toString()</code> on each <code>Point</code> to get
+			  a <code>String</code> representation of
+			  the <code>Point</code>. Add a line break
+			  character, <code>'\n'</code>, after each <code>Point</code>,
+			  including the one stored in <code>lastNode</code>.  Your
+			  output must match this description exactly in order to pass
+			  our grading scripts.</p>
+
+			<p class="ng-scope">If the <code>Tour</code> is empty (has
+			  no <code>Point</code>s), <code>toString()</code> should return
+			  the empty <code>String</code>.</p>
+
+      <p class="ng-scope"><em>Required Testing</em>: Add a <code>main</code> that
+        creates an empty tour and prints it out.  Your program should
+        now simply print a blank line.  Once this works, submit and
+        make sure you also pass the empty tour submission test.</p>
+      
+			<h3 class="ng-scope">E. <code>insertInOrder()</code></h3>
+
+      <p class="ng-scope">To facilitate testing, you will need to
+        implement <code>insertInOrder()</code> so you can add <code>Point</code>s
+        to your tour.</p>
+
+			<p class="ng-scope"><em><code>insertInOrder(Point p)</code></em> adds
+			  the <code>Point</code> <code>p</code> as the
+			  last <code>Point</code> of the <code>Tour</code>.</p>
+
+			<p class="ng-scope">Remember that your <code>Tour</code> class should always maintain
+			  <code>lastNode</code> at the end of the linked list referring
+			  to the first <code>Point</code> in the tour.</p>
+
+			<p class="ng-scope">If the <code>Tour</code> is empty, make sure that after this
+			  method finishes, your linked list contains
+			  two <code>Node</code> objects, both referring to the
+			  same <code>Point</code>.</p>
+      
+      <p class="ng-scope"><em>Required Testing</em>: Add code to <code>main</code> to
+        create the following four points and add them to your tour
+        using <code>insertInOrder()</code>:</p>
+      <ul class="ng-scope">
+        <li><code>a&nbsp;=&nbsp;(0,&nbsp;0)</code></li>
+        <li><code>b&nbsp;=&nbsp;(1,&nbsp;0)</code></li>
+        <li><code>c&nbsp;=&nbsp;(1,&nbsp;1)</code></li>
+        <li><code>d&nbsp;=&nbsp;(0,&nbsp;1)</code></li>
+      </ul>
+
+      <p class="ng-scope">The following image shows the structure of the link list
+        these insertions should create:</p>
+        
+      <p class="ng-scope"><img width="50%" src="./CS 112 Pset 6_ Traveling Salesman Problem_files/abcd.png" alt="four-point tour visualization"></p>
+
+
+      <p class="ng-scope">Print out the tour using <code>System.out.println</code> You
+        should see the following output (including a blank line at the
+        end):</p>
+
+      <pre class="ng-scope">(0.0, 0.0)
+(1.0, 0.0)
+(1.0, 1.0)
+(0.0, 1.0)
+(0.0, 0.0)
+
+</pre>
+
+      <p class="ng-scope">Once this test passes, submit your code and make sure it
+        passes our <code>toString()</code> tests
+        for <code>insertInOrder()</code> as well.  (At this point,
+        your code will still fail the tests for <code>size()</code>
+        and <code>distance()</code>.)</p>
+
+			<h3 class="ng-scope">F. Utility Methods</h3>
+			<p class="ng-scope">Implement the <code>size()</code>, <code>distance()</code>,
+			  and <code>draw()</code> methods of <code>Tour</code>. There
+			  are many good ways to implement these methods, using recursion
+			  or loops.  The choice is up to you.</p>
+			
+			<p class="ng-scope"><em><code>size()</code></em> returns the number
+			  of <code>Point</code>s in the <code>Tour</code>, (without
+			  including the first <code>Point</code> twice).</p>
+
+			<p class="ng-scope"><em><code>distance()</code></em> returns the total length of
+			  the <code>Tour</code> from <code>Point</code> to
+			  <code>Point</code>. Use the <code>distanceTo(Point p)</code>
+			  method of a <code>Point</code> to find its distance
+			  to <code>p</code>. An empty <code>Tour</code> has a distance
+			  of <code>0.0</code>.</p>
+			
+			<p class="ng-scope"><em><code>draw(Point p)</code></em> draws the
+			  entire <code>Tour</code> as lines going from point to pint
+			  using functions that call <code>PennDraw</code> code. Both
+			  edges adjacent to the input <code>Point</code> <code>p</code>
+			  should be drawn in a different color (if <code>p</code> is
+			  <code>null</code>, none of the edges should be in a different
+			  color).  Use the <code>drawTo(Point q)</code> method of
+			  a <code>Point</code> to draw a line from it
+			  to <code>q</code>. As we have provided
+			  <code>VisualizeTour</code> to handle setting up PennDraw's
+			  canvas for drawing your <code>Tour</code>, all this function
+			  needs to do is use the aforementioned <code>drawTo</code>
+			  method to draw every line segment between
+			  adjacent <code>Point</code>s. If an empty <code>Tour</code>
+			  calls the <code>draw</code> method, the method should simply
+			  return without drawing anything.</p>
+
+      <p class="ng-scope">The image below shows what our reference draws when we
+        call <code>tour.draw(a)</code> (refer to section E for the
+        value of <code>a</code>).  <code>tour</code> is the
+        four-point <code>Tour</code> we created for testing.  (Note
+        that <tt>VisualizeTour</tt> will color edges as it inserts
+        points one-by-one, but will ultimately draw the complete tour
+        in black.</p>
+			<img width="25%" src="./CS 112 Pset 6_ Traveling Salesman Problem_files/squareTour.png" alt="draw square tour" class="ng-scope">
+
+      <p class="ng-scope"><em>Required Testing</em>: Add code to <code>main</code> to
+        test each of these methods except <tt>draw()</tt> on an empty
+        tour, a tour containing only one point, a tour containing two
+        points, and a tour containing four points.  We encourage you
+        to include additional tests as well.  When you are certain all
+        of your own tests work, submit and make sure our tests pass as
+        well.  You are also welcome to add code to
+        test <tt>draw()</tt>, but it is easier to use the
+        provided <tt>VisualizeTour</tt> for this.</p>
+
+			<p class="ng-scope">As you debug your code, you may find this
+			  <a href="http://www.cs.princeton.edu/~cos126/java_visualize">Java
+			    execution visualizer</a> helpful. (It was created
+			  by <a href="https://github.com/daveagp/java_jail">daveagp</a>.)</p>
+		</div><!-- end ngRepeat: tab in tabs --><div class="tab-pane ng-scope" ng-repeat="tab in tabs" ng-class="{active: tab.active}" tab-content-transclude="tab">
+    
+			
+			<p class="ng-scope">Implement the <code>insertNearest()</code>
+			  and <code>shortestDetour()</code> methods.</p>
+			
+			<h3 class="ng-scope">A. Testing with <code>VisualizeTour</code></h3>
+			<p class="ng-scope">The client <code>VisualizeTour</code> program included
+			  in <code><a href="http://cs112.cs.yale.edu/19sp/psets/pset06/data.zip">data.zip</a></code> provides a
+			  user interface for you to test the methods you have written
+			  in <code>Tour</code>. Run it with a filename argument to
+			  animate the construction of your <code>Tour</code>. In the
+			  table at the bottom of this page, we have listed the values
+			  of <code>size()</code> and <code>distance()</code> that your
+			  methods should obtain for each insert method, as well as the
+			  <code>PennDraw</code> output that <code>draw()</code> should
+			  give.</p>
+      
+			<p class="ng-scope"><em>Required Testing</em>: Check that your in-order insertion
+			  method works for at least the input
+			  files <code>tsp0.txt</code>,
+			  <code>tsp1.txt</code>, <code>tsp2.txt</code>, <code>tsp3.txt</code>,
+        <code>tsp4.txt</code>, <code>tsp5.txt</code>, <code>tsp8.txt</code>,
+			  <code>tsp10.txt</code>, and <code>tsp100.txt</code>. Both the
+        drawing itself, and the size and distance, need to
+        match.  <em>Do not continue until <code>insertInOrder</code>
+        works for all these cases!</em></p>
+			
+			<h3 class="ng-scope">B. <code>insertNearest()</code></h3>
+			<p class="ng-scope"><em><code>insertNearest(Point p)</code></em> adds
+			  the <code>Point</code> <code>p</code> to
+			  the <code>Tour</code> <strong>after</strong> the
+			  closest <code>Point</code> already in
+			  the <code>Tour</code>.</p>
+			<p class="ng-scope">If there are multiple closest <code>Point</code>s with equal
+			  distances to <code>p</code>, insert <code>p</code> after
+			  the <strong>first</strong> such <code>Point</code> in the
+			  linked list.</p>
+			<p class="ng-scope">Your method must behave as <code>insertInOrder()</code> does
+			  when the linked list is empty.</p>
+			<p class="ng-scope">If you wrote a helper function in the previous section that
+			  inserts a given <code>Point</code> after a
+			  given <code>Node</code>, you may find it useful again
+			  here.</p>
+      <p class="ng-scope"><em>Required Testing</em>: Make sure
+        your <code>VisualizeTour</code> results match the figures
+        below for the Nearest-Neighbor Heuristic for all test cases
+        through <code>tsp100.txt</code>.  Both the drawing itself, and
+        the size and distance, need to match.  Then submit and make
+        sure it passes our submission tests as well.</p>
+			
+			<h3 class="ng-scope">C. <code>shortestDetour()</code></h3>
+			<p class="ng-scope"><em><code>shortestDetour(Point p)</code></em> adds
+			  the <code>Point</code> <code>p</code> to the <code>Tour</code>
+			  in the position where it would cause the smallest increase in
+			  the <code>Tour</code>'s distance.</p>
+			<p class="ng-scope">Do not compute the entire <code>Tour</code> distance for each
+			  position of <code>p</code>. Instead, compute the
+			  <strong>incremental distance</strong>: the change in distance
+			  from adding <code>p</code> between <code>Point</code>s
+			  <code>s</code> and <code>t</code> is the sum of the distances
+			  from <code>s</code> to <code>p</code> and from <code>p</code>
+			  to <code>t</code>, minus the original distance
+			  from <code>s</code> to <code>t</code>.</p>
+			<p class="ng-scope">If there are multiple positions for <code>p</code> that cause
+			  the same minimal increase in distance, insert <code>p</code>
+			  in the <strong>first</strong> such position.</p>
+			<p class="ng-scope">Your method must behave as <code>insertInOrder()</code> does
+			  when the linked list is empty.</p>
+			<p class="ng-scope">If you wrote a helper function when
+			  writing <code>insertInOrder()</code> that inserts a
+			  given <code>Point</code> after a given <code>Node</code>, you
+			  may find it useful again here.</p>
+			<p class="ng-scope"><b>Comment out all print statements in <code>Tour</code>
+	      before running <code>VisualizeTour</code> on a file of more
+	      than 100 <code>Point</code>s.</b> Otherwise, you will be
+	      waiting for a long time for <code>VisualizeTour</code> to
+	      finish.</p>
+      <p class="ng-scope"><em>Required Testing</em>: Make sure
+        your <code>VisualizeTour</code> results match the figures
+        below for all test cases through <code>tsp100.txt</code>.
+        Both the drawing itself, and the size and distance, need to
+        match.  Then submit and make sure it passes our submission
+        tests as well.</p>
+			
+			<h3 class="ng-scope">D. Reference Output</h3>
+			<p class="ng-scope">Test your nearest-neighbor heuristic and smallest-increase heuristic methods using <code>VisualizeTour</code>.
+			The following are the values and <code>PennDraw</code> output that your <code>Tour</code> methods should give for each of the provided input files. 
+			Note that for the files containing large quantities of points, such as 
+			mona-50k.txt, your program may take a long time to build the tour. 
+			You may have to wait for several moments, staring at a blank white 
+			PennDraw canvas, before your tour is visualized.</p>
+<table style="vertical-align: top !important; text-align: center; border: 1px #aaa solid" class="ng-scope">
+<tbody><tr><td style="vertical-align: top; border: 1px #aaa solid; padding: 15px; text-align: center"><strong>File</strong></td><td style="vertical-align: top; border: 1px #aaa solid; padding: 15px; text-align: center"><strong>In-Order Insertion (<code>'o'</code>)</strong></td>
+<td style="vertical-align: top; border: 1px #aaa solid; padding: 15px; text-align: center"><strong>Nearest-Neighbor Heuristic (<code>'n'</code>)</strong></td><td style="vertical-align: top; border: 1px #aaa solid; padding: 15px; text-align: center"><strong>Smallest-Increase Heuristic (<code>'s'</code>)</strong></td></tr>
+<tr>
+<td style="vertical-align: top; border: 1px #aaa solid; padding: 15px; text-align: center"><code>tsp0.txt</code></td>
+<td style="vertical-align: top; border: 1px #aaa solid; padding: 15px; text-align: center">Size: 0<br>Distance: 0.0000<br><img width="300" src="./CS 112 Pset 6_ Traveling Salesman Problem_files/tsp0.txt-o.png" alt="tsp0.txt order insertion"></td>
+<td style="vertical-align: top; border: 1px #aaa solid; padding: 15px; text-align: center">Size: 0<br>Distance: 0.0000<br><img width="300" src="./CS 112 Pset 6_ Traveling Salesman Problem_files/tsp0.txt-n.png" alt="tsp0.txt nearest insertion"></td>
+<td style="vertical-align: top; border: 1px #aaa solid; padding: 15px; text-align: center">Size: 0<br>Distance: 0.0000<br><img width="300" src="./CS 112 Pset 6_ Traveling Salesman Problem_files/tsp0.txt-s.png" alt="tsp0.txt smallest insertion"></td>
+</tr>
+<tr>
+<td style="vertical-align: top; border: 1px #aaa solid; padding: 15px; text-align: center"><code>tsp1.txt</code></td>
+<td style="vertical-align: top; border: 1px #aaa solid; padding: 15px; text-align: center">Size: 1<br>Distance: 0.0000<br><img width="300" src="./CS 112 Pset 6_ Traveling Salesman Problem_files/tsp1.txt-o.png" alt="tsp1.txt order insertion"></td>
+<td style="vertical-align: top; border: 1px #aaa solid; padding: 15px; text-align: center">Size: 1<br>Distance: 0.0000<br><img width="300" src="./CS 112 Pset 6_ Traveling Salesman Problem_files/tsp1.txt-n.png" alt="tsp1.txt nearest insertion"></td>
+<td style="vertical-align: top; border: 1px #aaa solid; padding: 15px; text-align: center">Size: 1<br>Distance: 0.0000<br><img width="300" src="./CS 112 Pset 6_ Traveling Salesman Problem_files/tsp1.txt-s.png" alt="tsp1.txt smallest insertion"></td>
+</tr>
+<tr>
+<td style="vertical-align: top; border: 1px #aaa solid; padding: 15px; text-align: center"><code>tsp2.txt</code></td>
+<td style="vertical-align: top; border: 1px #aaa solid; padding: 15px; text-align: center">Size: 2<br>Distance: 632.46<br><img width="300" src="./CS 112 Pset 6_ Traveling Salesman Problem_files/tsp2.txt-o.png" alt="tsp2.txt order insertion"></td>
+<td style="vertical-align: top; border: 1px #aaa solid; padding: 15px; text-align: center">Size: 2<br>Distance: 632.46<br><img width="300" src="./CS 112 Pset 6_ Traveling Salesman Problem_files/tsp2.txt-n.png" alt="tsp2.txt nearest insertion"></td>
+<td style="vertical-align: top; border: 1px #aaa solid; padding: 15px; text-align: center">Size: 2<br>Distance: 632.46<br><img width="300" src="./CS 112 Pset 6_ Traveling Salesman Problem_files/tsp2.txt-s.png" alt="tsp2.txt smallest insertion"></td>
+</tr>
+<tr>
+<td style="vertical-align: top; border: 1px #aaa solid; padding: 15px; text-align: center"><code>tsp3.txt</code></td>
+<td style="vertical-align: top; border: 1px #aaa solid; padding: 15px; text-align: center">Size: 3<br>Distance: 832.46<br><img width="300" src="./CS 112 Pset 6_ Traveling Salesman Problem_files/tsp3.txt-o.png" alt="tsp3.txt order insertion"></td>
+<td style="vertical-align: top; border: 1px #aaa solid; padding: 15px; text-align: center">Size: 3<br>Distance: 832.46<br><img width="300" src="./CS 112 Pset 6_ Traveling Salesman Problem_files/tsp3.txt-n.png" alt="tsp3.txt nearest insertion"></td>
+<td style="vertical-align: top; border: 1px #aaa solid; padding: 15px; text-align: center">Size: 3<br>Distance: 832.46<br><img width="300" src="./CS 112 Pset 6_ Traveling Salesman Problem_files/tsp3.txt-s.png" alt="tsp3.txt smallest insertion"></td>
+</tr>
+<tr>
+<td style="vertical-align: top; border: 1px #aaa solid; padding: 15px; text-align: center"><code>tsp4.txt</code></td>
+<td style="vertical-align: top; border: 1px #aaa solid; padding: 15px; text-align: center">Size: 4<br>Distance: 963.44<br><img width="300" src="./CS 112 Pset 6_ Traveling Salesman Problem_files/tsp4.txt-o.png" alt="tsp4.txt order insertion"></td>
+<td style="vertical-align: top; border: 1px #aaa solid; padding: 15px; text-align: center">Size: 4<br>Distance: 956.06<br><img width="300" src="./CS 112 Pset 6_ Traveling Salesman Problem_files/tsp4.txt-n.png" alt="tsp4.txt nearest insertion"></td>
+<td style="vertical-align: top; border: 1px #aaa solid; padding: 15px; text-align: center">Size: 4<br>Distance: 839.83<br><img width="300" src="./CS 112 Pset 6_ Traveling Salesman Problem_files/tsp4.txt-s.png" alt="tsp4.txt smallest insertion"></td>
+</tr>
+<tr>
+<td style="vertical-align: top; border: 1px #aaa solid; padding: 15px; text-align: center"><code>tsp5.txt</code></td>
+<td style="vertical-align: top; border: 1px #aaa solid; padding: 15px; text-align: center">Size: 5<br>Distance: 2595.1<br><img width="300" src="./CS 112 Pset 6_ Traveling Salesman Problem_files/tsp5.txt-o.png" alt="tsp5.txt order insertion"></td>
+<td style="vertical-align: top; border: 1px #aaa solid; padding: 15px; text-align: center">Size: 5<br>Distance: 2595.1<br><img width="300" src="./CS 112 Pset 6_ Traveling Salesman Problem_files/tsp5.txt-n.png" alt="tsp5.txt nearest insertion"></td>
+<td style="vertical-align: top; border: 1px #aaa solid; padding: 15px; text-align: center">Size: 5<br>Distance: 1872.8<br><img width="300" src="./CS 112 Pset 6_ Traveling Salesman Problem_files/tsp5.txt-s.png" alt="tsp5.txt smallest insertion"></td>
+</tr>
+<tr>
+<td style="vertical-align: top; border: 1px #aaa solid; padding: 15px; text-align: center"><code>tsp8.txt</code></td>
+<td style="vertical-align: top; border: 1px #aaa solid; padding: 15px; text-align: center">Size: 8<br>Distance: 3898.9<br><img width="300" src="./CS 112 Pset 6_ Traveling Salesman Problem_files/tsp8.txt-o.png" alt="tsp8.txt order insertion"></td>
+<td style="vertical-align: top; border: 1px #aaa solid; padding: 15px; text-align: center">Size: 8<br>Distance: 3378.8<br><img width="300" src="./CS 112 Pset 6_ Traveling Salesman Problem_files/tsp8.txt-n.png" alt="tsp8.txt nearest insertion"></td>
+<td style="vertical-align: top; border: 1px #aaa solid; padding: 15px; text-align: center">Size: 8<br>Distance: 2545.6<br><img width="300" src="./CS 112 Pset 6_ Traveling Salesman Problem_files/tsp8.txt-s.png" alt="tsp8.txt smallest insertion"></td>
+</tr>
+<tr>
+<td style="vertical-align: top; border: 1px #aaa solid; padding: 15px; text-align: center"><code>tsp10.txt</code></td>
+<td style="vertical-align: top; border: 1px #aaa solid; padding: 15px; text-align: center">Size: 10<br>Distance: 2586.7<br><img width="300" src="./CS 112 Pset 6_ Traveling Salesman Problem_files/tsp10.txt-o.png" alt="tsp10.txt order insertion"></td>
+<td style="vertical-align: top; border: 1px #aaa solid; padding: 15px; text-align: center">Size: 10<br>Distance: 1566.1<br><img width="300" src="./CS 112 Pset 6_ Traveling Salesman Problem_files/tsp10.txt-n.png" alt="tsp10.txt nearest insertion"></td>
+<td style="vertical-align: top; border: 1px #aaa solid; padding: 15px; text-align: center">Size: 10<br>Distance: 1655.7<br><img width="300" src="./CS 112 Pset 6_ Traveling Salesman Problem_files/tsp10.txt-s.png" alt="tsp10.txt smallest insertion"></td>
+</tr>
+<tr>
+<td style="vertical-align: top; border: 1px #aaa solid; padding: 15px; text-align: center"><code>tsp100.txt</code></td>
+<td style="vertical-align: top; border: 1px #aaa solid; padding: 15px; text-align: center">Size: 100<br>Distance: 25547<br><img width="300" src="./CS 112 Pset 6_ Traveling Salesman Problem_files/tsp100.txt-o.png" alt="tsp100.txt order insertion"></td>
+<td style="vertical-align: top; border: 1px #aaa solid; padding: 15px; text-align: center">Size: 100<br>Distance: 7389.9<br><img width="300" src="./CS 112 Pset 6_ Traveling Salesman Problem_files/tsp100.txt-n.png" alt="tsp100.txt nearest insertion"></td>
+<td style="vertical-align: top; border: 1px #aaa solid; padding: 15px; text-align: center">Size: 100<br>Distance: 4887.2<br><img width="300" src="./CS 112 Pset 6_ Traveling Salesman Problem_files/tsp100.txt-s.png" alt="tsp100.txt smallest insertion"></td>
+</tr>
+<tr>
+<td style="vertical-align: top; border: 1px #aaa solid; padding: 15px; text-align: center"><code>tsp1000.txt</code></td>
+<td style="vertical-align: top; border: 1px #aaa solid; padding: 15px; text-align: center">Size: 1000<br>Distance: 3.2769e+05<br><img width="300" src="./CS 112 Pset 6_ Traveling Salesman Problem_files/tsp1000.txt-o.png" alt="tsp1000.txt order insertion"></td>
+<td style="vertical-align: top; border: 1px #aaa solid; padding: 15px; text-align: center">Size: 1000<br>Distance: 27869<br><img width="300" src="./CS 112 Pset 6_ Traveling Salesman Problem_files/tsp1000.txt-n.png" alt="tsp1000.txt nearest insertion"></td>
+<td style="vertical-align: top; border: 1px #aaa solid; padding: 15px; text-align: center">Size: 1000<br>Distance: 17266<br><img width="300" src="./CS 112 Pset 6_ Traveling Salesman Problem_files/tsp1000.txt-s.png" alt="tsp1000.txt smallest insertion"></td>
+</tr>
+<tr>
+<td style="vertical-align: top; border: 1px #aaa solid; padding: 15px; text-align: center"><code>bier127.txt</code></td>
+<td style="vertical-align: top; border: 1px #aaa solid; padding: 15px; text-align: center">Size: 127<br>Distance: 21743<br><img width="300" src="./CS 112 Pset 6_ Traveling Salesman Problem_files/bier127.txt-o.png" alt="bier127.txt order insertion"></td>
+<td style="vertical-align: top; border: 1px #aaa solid; padding: 15px; text-align: center">Size: 127<br>Distance: 6494.0<br><img width="300" src="./CS 112 Pset 6_ Traveling Salesman Problem_files/bier127.txt-n.png" alt="bier127.txt nearest insertion"></td>
+<td style="vertical-align: top; border: 1px #aaa solid; padding: 15px; text-align: center">Size: 127<br>Distance: 4536.8<br><img width="300" src="./CS 112 Pset 6_ Traveling Salesman Problem_files/bier127.txt-s.png" alt="bier127.txt smallest insertion"></td>
+</tr>
+<tr>
+<td style="vertical-align: top; border: 1px #aaa solid; padding: 15px; text-align: center"><code>circuit1290.txt</code></td>
+<td style="vertical-align: top; border: 1px #aaa solid; padding: 15px; text-align: center">Size: 1290<br>Distance: 4.3033e+05<br><img width="300" src="./CS 112 Pset 6_ Traveling Salesman Problem_files/circuit1290.txt-o.png" alt="circuit1290.txt order insertion"></td>
+<td style="vertical-align: top; border: 1px #aaa solid; padding: 15px; text-align: center">Size: 1290<br>Distance: 25030<br><img width="300" src="./CS 112 Pset 6_ Traveling Salesman Problem_files/circuit1290.txt-n.png" alt="circuit1290.txt nearest insertion"></td>
+<td style="vertical-align: top; border: 1px #aaa solid; padding: 15px; text-align: center">Size: 1290<br>Distance: 14596<br><img width="300" src="./CS 112 Pset 6_ Traveling Salesman Problem_files/circuit1290.txt-s.png" alt="circuit1290.txt smallest insertion"></td>
+</tr>
+<tr>
+<td style="vertical-align: top; border: 1px #aaa solid; padding: 15px; text-align: center"><code>germany15112.txt</code></td>
+<td style="vertical-align: top; border: 1px #aaa solid; padding: 15px; text-align: center">Size: 15112<br>Distance: 4.2116e+06<br><img width="300" src="./CS 112 Pset 6_ Traveling Salesman Problem_files/germany15112.txt-o.png" alt="germany15112.txt order insertion"></td>
+<td style="vertical-align: top; border: 1px #aaa solid; padding: 15px; text-align: center">Size: 15112<br>Distance: 93119<br><img width="300" src="./CS 112 Pset 6_ Traveling Salesman Problem_files/germany15112.txt-n.png" alt="germany15112.txt nearest insertion"></td>
+<td style="vertical-align: top; border: 1px #aaa solid; padding: 15px; text-align: center">Size: 15112<br>Distance: 55754<br><img width="300" src="./CS 112 Pset 6_ Traveling Salesman Problem_files/germany15112.txt-s.png" alt="germany15112.txt smallest insertion"></td>
+</tr>
+<tr>
+<td style="vertical-align: top; border: 1px #aaa solid; padding: 15px; text-align: center"><code>mona-20k.txt</code></td>
+<td style="vertical-align: top; border: 1px #aaa solid; padding: 15px; text-align: center">Size: 20000<br>Distance: 4.9650e+06<br><img width="300" src="./CS 112 Pset 6_ Traveling Salesman Problem_files/mona-20k.txt-o.png" alt="mona-20k.txt order insertion"></td>
+<td style="vertical-align: top; border: 1px #aaa solid; padding: 15px; text-align: center">Size: 20000<br>Distance: 94894<br><img width="300" src="./CS 112 Pset 6_ Traveling Salesman Problem_files/mona-20k.txt-n.png" alt="mona-20k.txt nearest insertion"></td>
+<td style="vertical-align: top; border: 1px #aaa solid; padding: 15px; text-align: center">Size: 20000<br>Distance: 56334<br><img width="300" src="./CS 112 Pset 6_ Traveling Salesman Problem_files/mona-20k.txt-s.png" alt="mona-20k.txt smallest insertion"></td>
+</tr>
+<tr>
+<td style="vertical-align: top; border: 1px #aaa solid; padding: 15px; text-align: center"><code>mona-50k.txt</code></td>
+<td style="vertical-align: top; border: 1px #aaa solid; padding: 15px; text-align: center">Size: 50000<br>Distance: 1.2366e+07<br><img width="300" src="./CS 112 Pset 6_ Traveling Salesman Problem_files/mona-50k.txt-o.png" alt="mona-50k.txt order insertion"></td>
+<td style="vertical-align: top; border: 1px #aaa solid; padding: 15px; text-align: center">Size: 50000<br>Distance: 1.6168e+05<br><img width="300" src="./CS 112 Pset 6_ Traveling Salesman Problem_files/mona-50k.txt-n.png" alt="mona-50k.txt nearest insertion"></td>
+<td style="vertical-align: top; border: 1px #aaa solid; padding: 15px; text-align: center">Size: 50000<br>Distance: 95598<br><img width="300" src="./CS 112 Pset 6_ Traveling Salesman Problem_files/mona-50k.txt-s.png" alt="mona-50k.txt smallest insertion"></td>
+</tr>
+<tr>
+<td style="vertical-align: top; border: 1px #aaa solid; padding: 15px; text-align: center"><code>mona-100k.txt</code></td>
+<td style="vertical-align: top; border: 1px #aaa solid; padding: 15px; text-align: center">Size: 100001<br>Distance: 2.4795e+07<br><img width="300" src="./CS 112 Pset 6_ Traveling Salesman Problem_files/mona-100k.txt-o.png" alt="mona-100k.txt order insertion"></td>
+<td style="vertical-align: top; border: 1px #aaa solid; padding: 15px; text-align: center">Size: 100001<br>Distance: 2.6272e+05<br><img width="300" src="./CS 112 Pset 6_ Traveling Salesman Problem_files/mona-100k.txt-n.png" alt="mona-100k.txt nearest insertion"></td>
+<td style="vertical-align: top; border: 1px #aaa solid; padding: 15px; text-align: center">Size: 100001<br>Distance: 1.5472e+05<br><img width="300" src="./CS 112 Pset 6_ Traveling Salesman Problem_files/mona-100k.txt-s.png" alt="mona-100k.txt smallest insertion"></td>
+</tr>
+<tr>
+<td style="vertical-align: top; border: 1px #aaa solid; padding: 15px; text-align: center"><code>usa13509.txt</code></td>
+<td style="vertical-align: top; border: 1px #aaa solid; padding: 15px; text-align: center">Size: 13509<br>Distance: 3.9108e+06<br><img width="300" src="./CS 112 Pset 6_ Traveling Salesman Problem_files/usa13509.txt-o.png" alt="usa13509.txt order insertion"></td>
+<td style="vertical-align: top; border: 1px #aaa solid; padding: 15px; text-align: center">Size: 13509<br>Distance: 77450<br><img width="300" src="./CS 112 Pset 6_ Traveling Salesman Problem_files/usa13509.txt-n.png" alt="usa13509.txt nearest insertion"></td>
+<td style="vertical-align: top; border: 1px #aaa solid; padding: 15px; text-align: center">Size: 13509<br>Distance: 45075<br><img width="300" src="./CS 112 Pset 6_ Traveling Salesman Problem_files/usa13509.txt-s.png" alt="usa13509.txt smallest insertion"></td>
+</tr>
+</tbody></table>
+		
+		</div><!-- end ngRepeat: tab in tabs --><div class="tab-pane ng-scope" ng-repeat="tab in tabs" ng-class="{active: tab.active}" tab-content-transclude="tab">
+    
+			<h3 class="ng-scope">A. Extra credit</h3>
+			<p class="ng-scope">For extra credit, implement a better heuristic in a
+			class <code>TourEC</code>.  You are not required to use
+			the <code>Node</code>, <code>Tour</code> or <code>Point</code> classes for your
+			extra credit solution. <em>If you use a modified version of
+			these classes to implement <code>TourEC</code>, include them in
+			your <code>extra.zip</code></em>; otherwise, your TA may be
+			unable to compile your code.</p>
+			
+			<p class="ng-scope">Be warned that this is a relatively difficult extra credit,
+			although it gives an opportunity to learn a great deal about an
+			extremely important problem. <!--We will award a special prize to
+			the student whose <code>TourEC</code> finds the shortest tour
+			around the 1,000-point set in <code>tsp1000.txt</code> within
+			about five minutes of runtime.--></p>
+			
+			<p class="ng-scope">Here are some heuristics you may choose to implement.</p>
+		
+			<p class="ng-scope"><em>Farthest insertion</em> The farthest insertion heuristic
+			is just like the smallest increase insertion heuristic described in the assignment,
+			except that the <code>Point</code>s need not be inserted in the same order as the input.
+			Start with a <code>Tour</code> consisting of the two <code>Point</code>s that are farthest apart.
+			Repeat the following:</p>
+			<ul class="ng-scope">
+			<li>Among all <code>Point</code>s not in the <code>Tour</code>, choose the one that is <em>farthest</em>
+			from any <code>Point</code> already in the <code>Tour</code>.</li>
+			<li>Insert that <code>Point</code> into the <code>Tour</code> in the position
+			where it causes the smallest increase in the distance.</li>
+			</ul>
+			<p class="ng-scope">You will have to store all of the unused <code>Point</code>s in an
+			appropriate data structure, until they get inserted into the <code>Tour</code>.
+			If your code takes a long time, your algorithm probably
+			performs approximately <i>n</i><sup>3</sup> steps.
+			If you're careful and clever, this can be improved to
+			<i>n</i><sup>2</sup> steps.</p>
+
+			<p class="ng-scope"><em>Node interchange local search</em>
+			Run the original greedy heuristic (or any other heuristic).
+			Then, repeat the following:</p>
+			<ul class="ng-scope">
+			<li>Choose a pair of <code>Point</code>s.</li>
+			<li>Swap the two <code>Point</code>s in if this improves the <code>Tour</code>.
+			For example if the original greedy heuristic returns 1-5-6-2-3-4-1,
+			you might consider swapping 5 and 3 if the <code>Tour</code>
+			1-3-6-2-5-4-1 has a smaller distance.</li>
+			</ul>
+			<p class="ng-scope">Writing a function to swap two nodes in a linked list provides
+			great practice with coding linked lists.
+			Be careful, it can be a little trickier that you might first
+			expect (e.g., make sure your code handles the case when the two <code>Point</code>s
+			occur consecutively in the original <code>Tour</code>).</p>
+
+			<p class="ng-scope"><em>Edge interchange local search</em>
+			Run the original greedy heuristic (or any other heuristic).
+			Then, repeat the following:
+			</p><ul class="ng-scope">
+			<li>Choose a pair of edges, say 1-2 and 3-4.</li>
+			<li>Replace them with 1-3 and 2-4 if the resulting <code>Tour</code>
+			1-3-6-2-5-4-1 has a smaller distance.</li>
+			</ul>
+			<p class="ng-scope">This requires some care, as you will have to reverse the orientation
+			of the links in the original <code>Tour</code> between <code>Node</code>s 3 and 2.
+			After performing this heuristic, there will be no crossing
+			edges in the <code>Tour</code>, although it need not be optimal.</p>
+
+			<h3 class="ng-scope">B. Enrichment</h3>
+			<ul class="ng-scope">
+			  <li>The best known tour for <code>tsp1000.txt</code> is a solution of distance
+				15476.519, which was found using the <a href="http://www.tsp.gatech.edu/concorde.html">Concorde TSP
+				solver</a>.</li>
+			  <li>Georgia Tech's <a href="http://www.tsp.gatech.edu/">TSP
+				site</a> contains a wealth of interesting information including
+				many applications of the TSP and
+				<a href="http://www.tsp.gatech.edu/games/tspOnePlayer.html">two
+				TSP games</a>.</li>
+			  <li>Here's a <a href="http://cs112.cs.yale.edu/19sp/psets/pset06/tsp13509.gif"> 13,509 city problem</a> that
+				contains each of the 13,509 cities in the continental US with
+				population over 500. The <a href="http://cs112.cs.yale.edu/19sp/psets/pset06/tsp13509-sol.jpg">optimal
+				solution</a> was discovered in 1998 by Applegate, Bixby, Chvatal
+				and Cook using theoretical ideas from <strong>linear and integer
+				programming</strong>. The following <a href="http://cs112.cs.yale.edu/19sp/psets/pset06/tsp15112.pdf">15,112
+				city problem</a> was solved to optimality in April, 2001, and is
+				the current world record. It took 585,936,700 CPU seconds (along
+				with a ton of cleverness) to find the optimal tour through 15,112
+				cities in Germany.</li>
+			  <li>Some folks even use the TSP to create and sell art. Check
+				out <a href="http://www.oberlin.edu/math/faculty/bosch/tspart-page.html">Bob
+				Bosch's page</a>. You can
+				even <a href="http://www.oberlin.edu/math/faculty/bosch/making-tspart-page.html">make
+				your own TSP artwork</a>.</li>
+			  <li> Here is
+				a <a href="http://campaignstops.blogs.nytimes.com/2011/12/21/the-problem-of-the-traveling-politician/">New
+				  York Times article</a> on finding an optimal traveling
+				politician tour in the state of Iowa.</li>
+			  <li>Here's a <a href="http://www.research.att.com/~dsj/papers/TSPchapter.pdf">survey article</a>
+				on heuristics for the TSP.</li>
+			</ul>
+		</div><!-- end ngRepeat: tab in tabs --><div class="tab-pane ng-scope" ng-repeat="tab in tabs" ng-class="{active: tab.active}" tab-content-transclude="tab">
+    
+		<h3 class="ng-scope">A. Readme</h3>
+		<p class="ng-scope">Complete <code><a href="http://cs112.cs.yale.edu/19sp/psets/pset06/readme_tsp.txt">readme_tsp.txt</a></code>
+		  in the same way that you have done for previous assignments.</p>
+		<h3 class="ng-scope">B. Submission</h3>
+			<p class="ng-scope">Submit <code>Node.java</code>, <code>Tour.java</code> and
+			<code><a href="http://cs112.cs.yale.edu/19sp/psets/pset06/readme_tsp.txt">readme_tsp.txt</a></code> on the course website.</p>
+			<p class="ng-scope">You may also submit a <code>TourEC.java</code> file for extra
+			credit. If your <code>TourEC.java</code> requires any additional
+			files, <strong>including a
+			modified <code>Point.java</code>, <code>Node.java</code>,
+			or <code>Tour.java</code>,</strong> you may submit them in a zip
+			file named <code>extra.zip</code>.</p>
+		</div><!-- end ngRepeat: tab in tabs -->
+  </div>
+</div>
+ 	
+
+
+
+</span></div><footer><!-- ngInclude: '/~cs112/19sp/footer.html' --></footer></body></html>

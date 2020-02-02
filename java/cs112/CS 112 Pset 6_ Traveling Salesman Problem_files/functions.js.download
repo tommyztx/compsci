@@ -1,0 +1,79 @@
+var globalvars = {
+  "CGI": "https://cs112.cs.yale.edu/cgi-bin/19sp", 
+  "COURSE": "cs112", 
+  "SEMESTER": "19sp", 
+  "ADMIN": "https://cs112.cs.yale.edu/19sp/admin", 
+  "URL": "http://cs112.cs.yale.edu/19sp", 
+  "FULL_COURSE": "CS 112", 
+  "SUBMIT": "https://cs112.cs.yale.edu/19sp/admin/dashboard.html", 
+  "FULL_TERM": "Spring 2019", 
+  "RELURL": "/~cs112/19sp", 
+  "PIAZZA": "http://piazza.com/yale/spring2019/cpsc112"
+};
+
+var courseApp = angular.module('courseApp', [ 'ui.bootstrap' ]);
+
+// Dirty rotten hack to force JSON to serialize dates in the local time zone
+// Relies on the date formatting library pasted at the bottom of this script
+Date.prototype.toJSON = function() {
+  return this.format('isoDateTime');
+};
+
+courseApp.controller('courseController', function($scope) {
+  $scope.isopen = true;
+  // copy the global variables into the $scope if they are defined
+  if (typeof globalvars != undefined) {
+    for (key in globalvars) $scope[key] = globalvars[key];
+  }
+}).directive('cisHeader', function() {
+  var headerurl = globalvars.RELURL + '/header.html';
+  var footerurl = globalvars.RELURL + '/footer.html';
+  return {
+    restrict: 'A',
+    transclude: true,
+    template: '<header><div ng-include="\'' + headerurl + '\'"></div></header>' +
+      '<div id="outer-content"><span id="inner-content" ng-transclude></span></div>' +
+      '<footer><div ng-include="\'' + footerurl + '\'"</div></footer>'
+  };
+}).directive('cisEmail', function() {
+  return {
+    restrict: 'E',
+    transclude: true,
+    scope: { user: '@', dom: '@' },
+    template: '<a ng-href="mailto:{{user}}@{{dom}}" ng-transclude></a>'
+  };
+}).directive('youtube', function() {
+  return {
+    restrict: 'EA',
+    scope: { code:'@code' },
+    template: '<div style="height:400px;"><iframe style="overflow:hidden;height:100%;width:100%" width="100%" height="100%" src="http://www.youtube.com/embed/{{code}}" frameborder="0" allowfullscreen></iframe></div>'
+  };
+}).directive('anew', function() {
+  return {
+    restrict: 'E',
+    transclude: true,
+    template: function (tElement, tAttrs) {
+      console.log(tAttrs);
+
+      var html = '<a target="_blank"';
+      for (var key in tAttrs['$attr']) {
+        console.log(key);
+        console.log(JSON.stringify(tAttrs[key]));
+        html += ' ' + tAttrs['$attr'][key] + '=' + JSON.stringify(tAttrs[key]);
+      }
+      html += '><span ng-transclude></span>&nbsp;<span class="glyphicon glyphicon-new-window"></span></a>';
+      return html;
+    }
+  };
+}).directive('announce', function() {
+  return {
+    restrict: 'E',
+    transclude: true,
+    template: function (tElement, tAttrs) {
+      return '<table class="posts">' +
+        '<tr><td class="date"><date><month>' + tAttrs['month'] +
+        '</month><day>' + tAttrs['day'] + '</day></date></td>' +
+        '<td><p class="post" ng-transclude></p></td></tr></table>';
+    }
+  };
+});
