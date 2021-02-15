@@ -12,6 +12,7 @@
   *
   *************************************************************************/
 
+
 public class VisualizeTour {
     private static int w, h;
 

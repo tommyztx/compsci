@@ -35,8 +35,8 @@ public class Point {
      * @throws NullPointerException if p is null
      */
     public double distanceTo(Point p) {
-        double dx = x - p.x;
-        double dy = y - p.y;
+        double dx = p.x - x;
+        double dy = p.y - y;
         return Math.sqrt(dx*dx + dy*dy);
     }
 
